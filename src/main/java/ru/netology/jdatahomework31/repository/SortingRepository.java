@@ -4,6 +4,7 @@ package ru.netology.jdatahomework31.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 
 import java.io.BufferedReader;
@@ -15,15 +16,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@org.springframework.stereotype.Repository
-public class Repository {
+@Repository
+public class SortingRepository {
 
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private String script = read("sorting.sql");
+    private final String script = read("sorting.sql");
 
-    public Repository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public SortingRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+    public SortingRepository() {
     }
 
     private static String read(String scriptFileName) {
@@ -35,17 +38,10 @@ public class Repository {
         }
     }
 
-    public String getProductName(String name) {
+    public List<String> getProductName(String name) {
         Map<String, Object> params = new HashMap<>();
         params.put("customerName", name);
-        List<String> productNameList = namedParameterJdbcTemplate.query(script, params, (rs, rowNum) -> {
-            String product = rs.getString("product_name");
-            return product;
-        });
-        String productName = null;
-        for (String s : productNameList) {
-            productName = s;
-        }
-        return productName;
+        List<String> productNameList = namedParameterJdbcTemplate.queryForList(script, params, String.class);
+        return productNameList;
     }
 }
