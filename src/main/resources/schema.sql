@@ -1,4 +1,4 @@
-create table customers
+create table if not exists customers
 (
     id           serial primary key ,
     name         varchar(25) not null,
@@ -8,7 +8,7 @@ create table customers
 
 );
 
-create table orders
+create table if not exists orders
 (
     id           serial primary key,
     date         varchar(50)  not null,
